@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Admin Dashboard</title>
+    <style>
+        :root {
+            --primary: #4a6cfa;
+            --primary-dark: #3a5af9;
+            --secondary: #6c757d;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --sidebar-width: 240px;
+            --sidebar-collapsed-width: 70px;
+            --header-height: 60px;
+            --border-radius: 8px;
+            --transition-speed: 0.3s;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --card-bg: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .user-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .user-info .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .user-info .user-name {
+    font-weight: 500;
+  }
+  .header h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--dark);
+  }
+        body {
+            background-color: #f5f7fa;
+            overflow-x: hidden;
+        }
+        
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--dark);
+            color: white;
+            transition: width var(--transition-speed) ease;
+            height: 100vh;
+            position: fixed;
+            z-index: 10;
+            box-shadow: var(--shadow);
+        }
+        
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+        
+        .logo-container {
+            padding: 20px;
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .nav-menu {
+            list-style: none;
+            padding: 15px 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 5px;
+        }
+        
+        .nav-link {
+          display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: #adb5bd;
+      text-decoration: none;
+      transition: all 0.3s;
+      white-space: nowrap;
+        }
+        .nav-link:hover {
+          color: white;
+          background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link.active {
+          border-left: 4px solid var(--primary);
+        }
+        
+        .nav-link i {
+            margin-right: 15px;
+            font-size: 18px;
+            min-width: 20px;
+            text-align: center;
+        }
+        
+        .nav-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .sidebar.collapsed .nav-text {
+            display: none;
+        }
+        
+        .sidebar.collapsed .logo-text {
+            display: none;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            transition: margin-left var(--transition-speed) ease;
+            padding: 20px;
+        }
+        
+        .main-content.expanded {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+        
+        .header {
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            margin-bottom: 20px;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        /* Content Area */
+        .content-area {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 0;
+        }
+        
+        .spinner {
+            border: 5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 5px solid var(--primary);
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .main-content {
+    margin-left: var(--sidebar-width);
+    padding: 20px;
+    transition: margin-left var(--transition-speed) ease;
+  }
+  
+  .main-content.expanded {
+    margin-left: var(--sidebar-collapsed-width);
+  }
+        /* Withdraw Cards */
+        .withdraw-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .withdraw-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .withdraw-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+        }
+        
+        .card-body {
+            padding: 15px;
+        }
+         h3 {
+    font-size: 18px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+        .card-info {
+            margin-bottom: 15px;
+        }
+        
+        .info-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            flex: 1;
+            color: var(--secondary);
+        }
+        
+        .info-value {
+            flex: 2;
+            color: var(--dark);
+        }
+        
+        .qr-container {
+            display: none;
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .qr-img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 15px;
+        }
+        
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 0.475rem 0.75rem;
+            font-size: 14px;
+            line-height: 1.5;
+            border-radius: var(--border-radius);
+            transition: all 0.15s ease-in-out;
+            cursor: pointer;
+            text-decoration: none;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            border-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                width: var(--sidebar-collapsed-width);
+            }
+            
+            .main-content {
+                margin-left: var(--sidebar-collapsed-width);
+            }
+            
+            .sidebar .nav-text, .logo-text {
+                display: none;
+            }
+            
+            .sidebar.expanded {
+                width: var(--sidebar-width);
+            }
+            
+            .sidebar.expanded .nav-text, .sidebar.expanded .logo-text {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .withdraw-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+            }
+            
+            .page-title {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+    <style>
+      :root {
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --secondary: #6c757d;
+        --success: #2ec4b6;
+        --danger: #e63946;
+        --warning: #ff9f1c;
+        --info: #4cc9f0;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --sidebar-width: 260px;
+        --sidebar-collapsed-width: 70px;
+        --header-height: 70px;
+        --border-radius: 8px;
+        --transition-speed: 0.3s;
+        --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+      
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      }
+      
+      body {
+        background-color: #f5f8ff;
+        overflow-x: hidden;
+        color: #333;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: var(--sidebar-width);
+        background: linear-gradient(to bottom, #2b2d42, #1a1b2e);
+        color: white;
+        transition: width var(--transition-speed) ease;
+        z-index: 999;
+        overflow-x: hidden;
+        box-shadow: var(--box-shadow);
+      }
+      
+      .sidebar.collapsed {
+        width: var(--sidebar-collapsed-width);
+      }
+      
+      .sidebar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+        height: var(--header-height);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.1);
+      }
+      
+      .sidebar-header h3 {
+        font-size: 20px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        letter-spacing: 0.5px;
+      }
+      
+      .toggle-btn {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+      }
+      
+      .toggle-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      
+      .sidebar-menu {
+        padding: 15px 0;
+      }
+      
+      .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        padding: 14px 24px;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: all 0.3s;
+        white-space: nowrap;
+        border-left: 4px solid transparent;
+        margin: 4px 0;
+      }
+      
+      .sidebar-menu a:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.05);
+      }
+      
+      .sidebar-menu a.active {
+        color: white;
+        background: rgba(67, 97, 238, 0.2);
+        border-left: 4px solid var(--primary);
+      }
+      
+      .sidebar-menu i {
+        margin-right: 16px;
+        font-size: 18px;
+        width: 24px;
+        text-align: center;
+      }
+      
+      .menu-text {
+        transition: opacity var(--transition-speed);
+        font-weight: 500;
+        font-size: 15px;
+      }
+      
+      .sidebar.collapsed .menu-text {
+        opacity: 0;
+        visibility: hidden;
+      }
+      
+      .main-content {
+        margin-left: var(--sidebar-width);
+        padding: 30px;
+        transition: margin-left var(--transition-speed) ease;
+        min-height: 100vh;
+      }
+      
+      .main-content.expanded {
+        margin-left: var(--sidebar-collapsed-width);
+      }
+      
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+        padding: 20px 25px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        margin-bottom: 30px;
+      }
+      
+      .header h1 {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--dark);
+        letter-spacing: -0.5px;
+      }
+      
+      .user-info {
+        display: flex;
+        align-items: center;
+      }
+      
+      .user-info .avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        margin-right: 12px;
+        font-size: 18px;
+        box-shadow: 0 2px 5px rgba(67, 97, 238, 0.3);
+      }
+      
+      .user-info .user-name {
+        font-weight: 600;
+        font-size: 15px;
+      }
+      
+      .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+      
+      .stat-card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        padding: 25px;
+        display: flex;
+        align-items: flex-start;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      
+      .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+      
+      .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20px;
+        font-size: 24px;
+        color: white;
+      }
+      
+      .stat-icon.blue {
+        background: linear-gradient(135deg, #4361ee, #3f37c9);
+      }
+      
+      .stat-icon.green {
+        background: linear-gradient(135deg, #2ec4b6, #0f9b8e);
+      }
+      
+      .stat-icon.orange {
+        background: linear-gradient(135deg, #ff9f1c, #f77f00);
+      }
+      
+      .stat-icon.red {
+        background: linear-gradient(135deg, #e63946, #d62828);
+      }
+      
+      .stat-info {
+        flex: 1;
+      }
+      
+      .stat-info .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 5px;
+        color: var(--dark);
+      }
+      
+      .stat-info .stat-label {
+        color: var(--secondary);
+        font-size: 14px;
+        font-weight: 500;
+      }
+      
+      .card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        padding: 25px;
+        margin-bottom: 25px;
+      }
+      
+      .card-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      
+      .card-title-action {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--primary);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+      }
+      
+      .card-title-action i {
+        margin-left: 5px;
+      }
+      
+      .activity-list {
+        list-style: none;
+      }
+      
+      .activity-item {
+        padding: 15px 0;
+        border-bottom: 1px solid #f1f1f1;
+        display: flex;
+        align-items: flex-start;
+      }
+      
+      .activity-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      
+      .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        font-size: 16px;
+        color: white;
+        flex-shrink: 0;
+      }
+      
+      .activity-content {
+        flex: 1;
+      }
+      
+      .activity-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--dark);
+      }
+      
+      .activity-time {
+        font-size: 13px;
+        color: var(--secondary);
+      }
+      
+      .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 20px;
+      }
+      
+      .action-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: var(--box-shadow);
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 160px;
+      }
+      
+      .action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+      
+      .action-icon {
+        font-size: 32px;
+        margin-bottom: 15px;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+        color: var(--primary);
+        transition: all 0.3s ease;
+      }
+      
+      .action-card:hover .action-icon {
+        background: var(--primary);
+        color: white;
+      }
+      
+      .action-title {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 5px;
+      }
+      
+      .action-description {
+        font-size: 13px;
+        color: var(--secondary);
+      }
+      
+      .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 20px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+      }
+      
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 0;
+        color: var(--dark);
+        background-color: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+      }
+      
+      .table th, .table td {
+        padding: 14px 18px;
+        vertical-align: middle;
+        border-top: 1px solid #e9ecef;
+      }
+      
+      .table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #495057;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      .table tbody tr:hover {
+        background-color: rgba(67, 97, 238, 0.03);
+      }
+      
+      .status-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: center;
+        min-width: 80px;
+      }
+      
+      .status-badge.success {
+        background-color: rgba(46, 196, 182, 0.1);
+        color: var(--success);
+      }
+      
+      .status-badge.pending {
+        background-color: rgba(255, 159, 28, 0.1);
+        color: var(--warning);
+      }
+      
+      .status-badge.failed {
+        background-color: rgba(230, 57, 70, 0.1);
+        color: var(--danger);
+      }
+      
+      .chart-container {
+        position: relative;
+        height: 250px;
+        margin-top: 15px;
+      }
+      
+      .chart-placeholder {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, #f5f7fa 0%, #e6eaf2 100%);
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--secondary);
+        font-weight: 500;
+        font-size: 14px;
+      }
+      
+      .footer {
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+        text-align: center;
+        color: var(--secondary);
+        font-size: 14px;
+      }
+      
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: var(--border-radius);
+        background-color: var(--success);
+        color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: opacity 0.3s, transform 0.3s;
+      }
+      
+      .notification.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      
+      @media (max-width: 992px) {
+        .main-content {
+          padding: 20px;
+        }
+        
+        .card {
+          padding: 20px;
+        }
+        
+        .stats-container {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      
+      @media (max-width: 768px) {
+        .sidebar {
+          width: var(--sidebar-collapsed-width);
+        }
+        
+        .sidebar .menu-text {
+          opacity: 0;
+          visibility: hidden;
+        }
+        
+        .main-content {
+          margin-left: var(--sidebar-collapsed-width);
+          padding: 15px;
+        }
+        
+        .sidebar.expanded {
+          width: var(--sidebar-width);
+          z-index: 1001;
+        }
+        
+        .sidebar.expanded .menu-text {
+          opacity: 1;
+          visibility: visible;
+        }
+        
+        .stats-container {
+          grid-template-columns: 1fr;
+        }
+        
+        .header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 15px;
+        }
+        
+        .user-info {
+          width: 100%;
+          justify-content: flex-end;
+        }
+      }
+    </style>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h3>Admin Panel</h3>
+      <button class="toggle-btn" id="toggleSidebar">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+    <div class="sidebar-menu">
+      <a href="index.html">
+        <i class="fas fa-tachometer-alt"></i>
+        <span class="menu-text">Dashboard</span>
+      </a>
+      <a href="coins.html">
+        <i class="fas fa-coins"></i>
+        <span class="menu-text">Coins Requests</span>
+      </a>
+      <a href="declare.html">
+        <i class="fas fa-flag"></i>
+        <span class="menu-text">Declare</span>
+      </a>
+      <a href="slider.html">
+        <i class="fas fa-sliders-h"></i>
+        <span class="menu-text">Slider</span>
+      </a>
+      <a href="ticket.html">
+        <i class="fas fa-ticket-alt"></i>
+        <span class="menu-text">Tickets</span>
+      </a>
+      <a href="upi.html">
+        <i class="fas fa-money-bill-wave"></i>
+        <span class="menu-text">UPI</span>
+      </a>
+      <a href="users.html">
+        <i class="fas fa-users"></i>
+        <span class="menu-text">Users</span>
+      </a>
+      <a href="withdraw.html" class="active">
+        <i class="fas fa-hand-holding-usd"></i>
+        <span class="menu-text">Withdraw</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="main-content" id="mainContent">
+    <div class="header">
+      <h1>Withdrawal Request</h1>
+      <div class="user-info">
+        <div class="avatar">A</div>
+        <div class="user-name">Admin</div>
+      </div>
+    </div>
+            <div class="content-area">
+                <div id="loader" class="loader">
+                    <div class="spinner"></div>
+                </div>
+                
+                <div id="container" class="withdraw-grid" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const URL = 'https://script.google.com/macros/s/AKfycbwF72B4hzPnSjwDbGPCRpFqBCyE4j67BP25HBDzkQ7t6S_j_2t5E9eYsAj3DEaTOd0a/exec';
+        let currentQR = null;
+        
+        // Sidebar Toggle Functionality
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        const toggleBtn = document.getElementById('toggleSidebar');
+        
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        });
+        
+        // Display current date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            document.getElementById('date-time').textContent = now.toLocaleDateString('en-US', options);
+        }
+        
+        updateDateTime();
+        setInterval(updateDateTime, 60000);
+        
+        // Fetch Withdraw Requests
+        function fetchWithdraws() {
+            fetch(URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'getWithdraws' })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('loader').style.display = 'none';
+                const container = document.getElementById('container');
+                container.style.display = 'grid';
+                
+                if (data.withdraws.length === 0) {
+                    container.innerHTML = '<div class="no-data" style="grid-column: 1/-1; text-align: center; padding: 30px;">No withdraw requests found.</div>';
+                    return;
+                }
+                
+                data.withdraws.forEach((item, index) => {
+                    const qrLink = `upi://pay?pa=${encodeURIComponent(item.upi)}&pn=${encodeURIComponent(item.name)}&am=${item.amount}&cu=INR`;
+                    const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrLink)}`;
+                    
+                    const card = document.createElement('div');
+                    card.className = 'withdraw-card';
+                    card.innerHTML = `
+                        <div class="card-header">
+                            Withdraw Request #${index + 1}
+                        </div>
+                        <div class="card-body">
+                            <div class="card-info">
+                                <div class="info-row">
+                                    <div class="info-label">Name:</div>
+                                    <div class="info-value">${item.name}</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">UPI ID:</div>
+                                    <div class="info-value">${item.upi}</div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="info-label">Amount:</div>
+                                    <div class="info-value"><strong>₹${item.amount}</strong></div>
+                                </div>
+                            </div>
+                            
+                            <button onclick="showQR(${index})" class="btn btn-primary">
+                                <i class="fas fa-qrcode"></i> Toggle QR Code
+                            </button>
+                            
+                            <div id="qr-${index}" class="qr-container">
+                                <img src="${qrURL}" class="qr-img" alt="Payment QR Code" />
+                                <div class="action-buttons">
+                                    <button onclick="updateStatus('Accept', ${item.row})" class="btn btn-success">
+                                        <i class="fas fa-check"></i> Accept
+                                    </button>
+                                    <button onclick="updateStatus('Reject', ${item.row})" class="btn btn-danger">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            })
+            .catch(error => {
+                document.getElementById('loader').style.display = 'none';
+                const container = document.getElementById('container');
+                container.style.display = 'block';
+                container.innerHTML = `<div class="error" style="text-align: center; color: var(--danger); padding: 30px;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 32px; margin-bottom: 15px;"></i>
+                    <p>Failed to load withdraw requests. Please try again later.</p>
+                </div>`;
+                console.error('Error fetching withdraws:', error);
+            });
+        }
+        
+        function showQR(index) {
+            if (currentQR !== null && currentQR !== index) {
+                document.getElementById(`qr-${currentQR}`).style.display = 'none';
+            }
+            
+            const currentDiv = document.getElementById(`qr-${index}`);
+            const isVisible = currentDiv.style.display === 'block';
+            currentDiv.style.display = isVisible ? 'none' : 'block';
+            currentQR = isVisible ? null : index;
+        }
+        
+        function updateStatus(status, row) {
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+            `;
+            
+            const spinner = document.createElement('div');
+            spinner.className = 'spinner';
+            loadingOverlay.appendChild(spinner);
+            document.body.appendChild(loadingOverlay);
+            
+            fetch(URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'updateWithdrawStatus',
+                    status,
+                    row
+                })
+            })
+            .then(res => res.json())
+            .then(() => {
+                document.body.removeChild(loadingOverlay);
+                
+                const statusOverlay = document.createElement('div');
+                statusOverlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0,0,0,0.7);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 9999;
+                    color: white;
+                    font-size: 20px;
+                `;
+                
+                const statusMessage = document.createElement('div');
+                statusMessage.style.cssText = `
+                    background: ${status === 'Accept' ? 'var(--success)' : 'var(--danger)'};
+                    padding: 20px 40px;
+                    border-radius: 8px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                `;
+                statusMessage.innerHTML = `<i class="fas fa-${status === 'Accept' ? 'check-circle' : 'times-circle'}" style="margin-right: 10px;"></i> Withdraw ${status}ed Successfully!`;
+                
+                statusOverlay.appendChild(statusMessage);
+                document.body.appendChild(statusOverlay);
+                
+                setTimeout(() => {
+                    document.body.removeChild(statusOverlay);
+                    location.reload();
+                }, 1500);
+            })
+            .catch(error => {
+                document.body.removeChild(loadingOverlay);
+                alert(`Error: ${error.message}`);
+            });
+        }
+        
+        // Initialize the page
+        window.onload = function() {
+            fetchWithdraws();
+            
+            // Add active class to current page in sidebar
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                const linkHref = link.getAttribute('href');
+                if (linkHref === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+        };
+    </script>
+</body>
+</html>
